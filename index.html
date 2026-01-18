@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goggles - Search & Management System</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Product+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<style>
+/* Reset and Base */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { 
+    font-family: 'Product Sans', Arial, sans-serif; 
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+    min-height: 100vh; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    color: #333; 
+}
+
+/* Card System */
+.card { 
+    background: rgba(255, 255, 255, 0.95); 
+    backdrop-filter: blur(10px); 
+    border-radius: 20px; 
+    padding: 40px; 
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1); 
+    max-width: 800px; 
+    width: 90%; 
+    display: none; 
+    animation: fadeIn 0.5s ease-in-out; 
+}
+.card.active { display: block; }
+
+@keyframes fadeIn { 
+    from { opacity: 0; transform: translateY(20px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
+
+/* Typography */
+.logo { 
+    font-size: 48px; 
+    font-weight: 700; 
+    background: linear-gradient(45deg, #4285f4, #ea4335, #fbbc04, #34a853); 
+    -webkit-background-clip: text; 
+    -webkit-text-fill-color: transparent; 
+    margin-bottom: 20px; 
+    text-align: center; 
+}
+.mini-logo { font-size: 24px; font-weight: bold; color: #4285f4; }
+
+/* Headers */
+.mini-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 30px; 
+    padding-bottom: 15px; 
+    border-bottom: 1px solid #eee; 
+}
+.header-actions { display: flex; gap: 10px; }
+.header-btn { 
+    background: #f8f9fa; 
+    color: #666; 
+    border: 1px solid #ddd; 
+    padding: 8px 16px; 
+    border-radius: 6px; 
+    font-size: 14px; 
+}
+
+/* Forms */
+.login-form { display: flex; flex-direction: column; gap: 15px; margin: 20px 0; }
+.login-form input { 
+    padding: 12px 20px; 
+    border: 2px solid #e0e0e0; 
+    border-radius: 25px; 
+    outline: none; 
+}
+.login-form input:focus { border-color: #4285f4; }
+
+/* Buttons */
+button { 
+    background: linear-gradient(45deg, #4285f4, #34a853); 
+    color: white; 
+    border: none; 
+    padding: 12px 24px; 
+    border-radius: 25px; 
+    font-size: 16px; 
+    cursor: pointer; 
+    transition: all 0.3s ease; 
+}
+button:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 8px 25px rgba(66, 133, 244, 0.4); 
+}
+
+/* Search Interface */
+.search-container { display: flex; gap: 10px; justify-content: center; margin: 20px 0; }
+.search-filters { display: flex; gap: 10px; justify-content: center; margin: 15px 0; }
+.search-results { margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px; }
+
+/* Dashboard */
+.dashboard-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; }
+.stat-card { background: white; padding: 20px; border-radius: 10px; text-align: center; }
+.stat-number { font-size: 32px; font-weight: bold; color: #4285f4; }
+
+/* System Info */
+.system-info { display: flex; justify-content: center; gap: 30px; margin: 20px 0; }
+.info-item span { font-size: 24px; font-weight: bold; color: #4285f4; }
+
+/* Admin */
+.admin-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; }
+.admin-controls { display: flex; gap: 10px; justify-content: center; }
+
+/* Log */
+.log-content { background: #1e1e1e; color: #00ff00; padding: 15px; border-radius: 8px; font-family: monospace; max-height: 150px; overflow-y: auto; }
+
+.notice { background: #d4edda; border: 1px solid #c3e6cb; padding: 15px; border-radius: 10px; margin: 20px 0; }
+</style>
+</head>
+
+<body>
+
+<!-- PAGE 1 -->
+<div class="card active" id="page1">
+    <div class="logo">Goggles</div>
+    <h2>Secure Access Portal</h2>
+    <p class="subtitle">Advanced Search & User Management System</p>
+
+    <div class="login-form">
+        <input type="text" id="usernameField" placeholder="Username">
+        <input type="password" id="passwordField" placeholder="Password">
+        <button onclick="handleLogin()">Access System</button>
+    </div>
+
+    <div class="system-info">
+        <div class="info-item"><span id="userCount">0</span> Active Users</div>
+        <div class="info-item"><span id="searchCount">0</span> Searches Today</div>
+    </div>
+
+    <div class="notice">🔒 Secure authentication system</div>
+</div>
+
+<!-- PAGE 2 -->
+<div class="card" id="page2">
+    <div class="mini-header">
+        <div class="mini-logo">Goggles Search</div>
+        <div class="header-actions">
+            <button onclick="goToPage(3)" class="header-btn">Dashboard</button>
+            <button onclick="logout()" class="header-btn">Logout</button>
+        </div>
+    </div>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search the web...">
+        <button onclick="performSearch()">Search</button>
+    </div>
+
+    <div class="search-filters">
+        <select id="searchType">
+            <option value="web">Web</option>
+            <option value="images">Images</option>
+            <option value="news">News</option>
+        </select>
+        <input type="number" id="resultLimit" placeholder="Results: 10">
+    </div>
+
+    <div class="search-results">
+        <div id="resultStats">Ready to search</div>
+        <div id="resultsList"></div>
+    </div>
+</div>
+
+<!-- PAGE 3 -->
+<div class="card" id="page3">
+    <div class="mini-header">
+        <div class="mini-logo">User Dashboard</div>
+        <div class="header-actions">
+            <button onclick="goToPage(2)" class="header-btn">Search</button>
+            <button onclick="logout()" class="header-btn">Logout</button>
+        </div>
+    </div>
+
+    <div class="dashboard-stats">
+        <div class="stat-card"><div class="stat-number" id="totalSearches">0</div>Total Searches</div>
+        <div class="stat-card"><div class="stat-number" id="savedResults">0</div>Saved Results</div>
+        <div class="stat-card"><div class="stat-number" id="accountAge">0</div>Days Active</div>
+    </div>
+
+    <div id="activityList"></div>
+</div>
+
+<!-- PAGE 4 -->
+<div class="card" id="page4">
+    <div class="mini-header">
+        <div class="mini-logo">Admin Panel</div>
+        <div class="header-actions">
+            <button onclick="goToPage(3)" class="header-btn">Dashboard</button>
+            <button onclick="logout()" class="header-btn">Logout</button>
+        </div>
+    </div>
+
+    <div class="admin-stats">
+        <div><div id="totalUsers">0</div>Total Users</div>
+        <div><div id="totalSearchesAll">0</div>All Searches</div>
+        <div><div id="systemLoad">0%</div>System Load</div>
+    </div>
+
+    <div class="admin-controls">
+        <button onclick="generateReport()">Generate Report</button>
+        <button onclick="backupData()">Backup Data</button>
+        <button onclick="systemMaintenance()">Maintenance</button>
+    </div>
+
+    <div class="log-content" id="systemLog"></div>
+</div>
+
+<script>
+/* ===== MERGED script.js ===== */
+
+const AppState = {
+    currentUser: null,
+    users: JSON.parse(localStorage.getItem('goggles_users') || '[]'),
+    searches: JSON.parse(localStorage.getItem('goggles_searches') || '[]'),
+    currentPage: 1,
+    isAdmin: false
+};
+
+function goToPage(page) {
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+    document.getElementById(`page${page}`).classList.add('active');
+}
+
+function handleLogin() {
+    const u = usernameField.value.trim();
+    const p = passwordField.value.trim();
+    if (!u || !p) return alert('Enter credentials');
+    AppState.currentUser = u;
+    goToPage(2);
+}
+
+function performSearch() {
+    const q = searchInput.value.trim();
+    if (!q) return alert('Enter a search');
+    document.getElementById('resultStats').textContent = `Results for "${q}"`;
+}
+
+function logout() {
+    AppState.currentUser = null;
+    goToPage(1);
+}
+</script>
+
+</body>
+</html>
